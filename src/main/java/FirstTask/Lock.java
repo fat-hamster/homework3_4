@@ -5,46 +5,52 @@ public class Lock {
 
     public synchronized void printA() {
         synchronized (task) {
-            while (!"A".equals(task)) {
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            for (int i = 0; i < 5; i++) {
+                while (!"A".equals(task)) {
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
+                System.out.print(task);
+                task = "B";
+                notifyAll();
             }
-            System.out.print(task);
-            task = "B";
-            notifyAll();
         }
     }
 
     public synchronized void printB() {
         synchronized (task) {
-            while (!"B".equals(task)) {
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            for (int i = 0; i < 5; i++) {
+                while (!"B".equals(task)) {
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
+                System.out.print(task);
+                task = "C";
+                notifyAll();
             }
-            System.out.print(task);
-            task = "C";
-            notifyAll();
         }
     }
 
     public synchronized void printC() {
         synchronized (task) {
-            while (!"C".equals(task)) {
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            for (int i = 0; i < 5; i++) {
+                while (!"C".equals(task)) {
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
+                System.out.print(task);
+                task = "A";
+                notifyAll();
             }
-            System.out.print(task);
-            task = "A";
-            notifyAll();
         }
     }
 }

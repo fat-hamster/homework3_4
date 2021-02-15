@@ -7,13 +7,11 @@ public class Main {
 
     public static void main(String[] args) {
         Lock lockSample = new Lock();
-        ExecutorService service = Executors.newFixedThreadPool(9);
+        ExecutorService service = Executors.newFixedThreadPool(3);
 
-        for (int i = 0; i < 3; i++) {
-            service.submit(new Thread(lockSample::printA));
-            service.submit(new Thread(lockSample::printB));
-            service.submit(new Thread(lockSample::printC));
-        }
+        service.submit(new Thread(lockSample::printA));
+        service.submit(new Thread(lockSample::printB));
+        service.submit(new Thread(lockSample::printC));
 
         service.shutdown();
     }
