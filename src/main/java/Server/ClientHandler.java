@@ -14,7 +14,7 @@ public class ClientHandler {
     private DataInputStream dataInputStream;
     private DataOutputStream dataOutputStream;
     private String nick;
-    private ExecutorService executorService;
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     public ClientHandler(MyServer myServer, Socket socket) {
         try {
@@ -24,7 +24,6 @@ public class ClientHandler {
             this.dataInputStream = new DataInputStream(socket.getInputStream());
             this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
 
-            executorService = Executors.newSingleThreadExecutor();
             Runnable auth = this::authentication;
             Future future = executorService.submit(auth);
 
