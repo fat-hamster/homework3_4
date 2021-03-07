@@ -1,6 +1,7 @@
 package Server;
 
 import com.google.gson.Gson;
+import org.apache.logging.log4j.Logger;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -15,8 +16,11 @@ public class ClientHandler {
     private DataOutputStream dataOutputStream;
     private String nick;
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private final Logger LOG;
 
-    public ClientHandler(MyServer myServer, Socket socket) {
+    @SuppressWarnings("rawtypes")
+    public ClientHandler(MyServer myServer, Socket socket, Logger LOG) {
+        this.LOG = LOG;
         try {
             this.myServer = myServer;
             this.socket = socket;
@@ -33,7 +37,8 @@ public class ClientHandler {
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             } catch (TimeoutException e) {
-                System.out.println("Connection timeout "+MyServer.TIMEOUT+" sec");
+                LOG.error("Connection timeout "+MyServer.TIMEOUT+" sec");
+                //System.out.println("Connection timeout "+MyServer.TIMEOUT+" sec");
                 closeConnection();
             }
 
@@ -51,7 +56,8 @@ public class ClientHandler {
             dataOutputStream.close();
             dataInputStream.close();
             socket.close();
-            System.out.println(nick + ": сеанс завершен");
+            //System.out.println(nick + ": сеанс завершен");
+            LOG.info(nick + ": сеанс завершен");
         } catch (IOException ignore) {
         }
         executorService.shutdown();
@@ -102,6 +108,7 @@ public class ClientHandler {
                 String[] command = message.getMessage().split("\\s");
                 switch (command[0]) {
                     case "/end": {
+                        LOG.info("Close connection from " + nick);
                         closeConnection();
                         return;
                     }
@@ -109,6 +116,7 @@ public class ClientHandler {
                         if (command.length < 3) {
                             Message msg = new Message();
                             msg.setMessage("Не хватает параметров, необходимо отправить команду следующего вида: /w <ник> <сообщение>");
+                            LOG.warn("Не хватает параметров, необходимо отправить команду следующего вида: /w <ник> <сообщение>");
                             this.sendMessage(msg);
                         }
                         String nick = command[1];
@@ -124,6 +132,7 @@ public class ClientHandler {
                         if (command.length != 2) {
                             Message msg = new Message();
                             msg.setMessage("Необходимо отправить команду следующего вида:\n/ch <новый_ник>");
+                            LOG.warn("Необходимо отправить команду следующего вида:\n/ch <новый_ник>");
                             this.sendMessage(msg);
                             break;
                         }
@@ -135,6 +144,7 @@ public class ClientHandler {
                         }
                         Message msg = new Message();
                         msg.setMessage(this.nick + " теперь известен как " + command[1]);
+                        LOG.info(this.nick + " теперь известен как " + command[1]);
                         myServer.broadcastMessage(msg);
                         this.nick = command[1];
                         break;

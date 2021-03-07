@@ -1,5 +1,8 @@
 package Server;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -14,22 +17,23 @@ public class MyServer {
     private List<ClientHandler> clients;
     private AuthService authService;
     private ExecutorService executorService;
+    private static final Logger LOG = LogManager.getLogger(MyServer.class);
 
     public MyServer() {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            LOG.info("Сервер запущен");
             authService = new BaseAuthService();
             authService.start();
             clients = new ArrayList<>();
             executorService = Executors.newCachedThreadPool();
+            System.out.println("Сервер запущен");
 
             while (true) {
                 System.out.println("Ожидаем подключение клиентов");
                 Socket socket = serverSocket.accept();
                 System.out.println("Клиент подключился");
-                //new ClientHandler(this, socket);
-                executorService.execute(new Thread(() -> {
-                    new ClientHandler(this, socket);
-                }));
+                LOG.info("Клиент подключился");
+                executorService.execute(new Thread(() -> new ClientHandler(this, socket, LOG)));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -41,7 +45,9 @@ public class MyServer {
     public synchronized void sendMessageToClient(ClientHandler from, String nickTo, String msg) {
         for (ClientHandler client : clients) {
             if (client.getNick().equals(nickTo)) {
-                System.out.printf("Отправляем личное сообщение от %s, кому %s", from.getNick(), nickTo);
+                //System.out.printf("Отправляем личное сообщение от %s, кому %s", from.getNick(), nickTo);
+                String infoStr = "Отправляем личное сообщение от " + from.getNick() + ", кому " + nickTo;
+                LOG.info(infoStr);
                 Message message = new Message();
                 message.setNick(from.getNick());
                 message.setMessage(msg);
@@ -49,9 +55,11 @@ public class MyServer {
                 return;
             }
         }
-        System.out.printf("Клиент с ником %s не подключен к чату", nickTo);
+        String infoStr = "Клиент с ником " + nickTo +  "не подключен к чату";
+        LOG.warn(infoStr);
+        //System.out.printf("Клиент с ником %s не подключен к чату", nickTo);
         Message message = new Message();
-        message.setMessage("Клиент с этим ником не подключен к чату");
+        message.setMessage(infoStr);
         from.sendMessage(message);
     }
 
