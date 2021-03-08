@@ -1,6 +1,7 @@
 package Server;
 
 import com.google.gson.Gson;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.DataInputStream;
@@ -16,11 +17,10 @@ public class ClientHandler {
     private DataOutputStream dataOutputStream;
     private String nick;
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-    private final Logger LOG;
+    private final Logger LOG = LogManager.getLogger(ClientHandler.class);
 
     @SuppressWarnings("rawtypes")
-    public ClientHandler(MyServer myServer, Socket socket, Logger LOG) {
-        this.LOG = LOG;
+    public ClientHandler(MyServer myServer, Socket socket) {
         try {
             this.myServer = myServer;
             this.socket = socket;
@@ -38,7 +38,6 @@ public class ClientHandler {
                 e.printStackTrace();
             } catch (TimeoutException e) {
                 LOG.error("Connection timeout "+MyServer.TIMEOUT+" sec");
-                //System.out.println("Connection timeout "+MyServer.TIMEOUT+" sec");
                 closeConnection();
             }
 
@@ -56,7 +55,6 @@ public class ClientHandler {
             dataOutputStream.close();
             dataInputStream.close();
             socket.close();
-            //System.out.println(nick + ": сеанс завершен");
             LOG.info(nick + ": сеанс завершен");
         } catch (IOException ignore) {
         }

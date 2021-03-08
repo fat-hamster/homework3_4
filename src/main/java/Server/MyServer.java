@@ -21,19 +21,17 @@ public class MyServer {
 
     public MyServer() {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            LOG.info("Сервер запущен");
             authService = new BaseAuthService();
             authService.start();
             clients = new ArrayList<>();
             executorService = Executors.newCachedThreadPool();
-            System.out.println("Сервер запущен");
+            LOG.info("Сервер запущен");
 
             while (true) {
                 System.out.println("Ожидаем подключение клиентов");
                 Socket socket = serverSocket.accept();
-                System.out.println("Клиент подключился");
                 LOG.info("Клиент подключился");
-                executorService.execute(new Thread(() -> new ClientHandler(this, socket, LOG)));
+                executorService.execute(new Thread(() -> new ClientHandler(this, socket)));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -45,7 +43,6 @@ public class MyServer {
     public synchronized void sendMessageToClient(ClientHandler from, String nickTo, String msg) {
         for (ClientHandler client : clients) {
             if (client.getNick().equals(nickTo)) {
-                //System.out.printf("Отправляем личное сообщение от %s, кому %s", from.getNick(), nickTo);
                 String infoStr = "Отправляем личное сообщение от " + from.getNick() + ", кому " + nickTo;
                 LOG.info(infoStr);
                 Message message = new Message();
@@ -57,13 +54,13 @@ public class MyServer {
         }
         String infoStr = "Клиент с ником " + nickTo +  "не подключен к чату";
         LOG.warn(infoStr);
-        //System.out.printf("Клиент с ником %s не подключен к чату", nickTo);
         Message message = new Message();
         message.setMessage(infoStr);
         from.sendMessage(message);
     }
 
     public synchronized void broadcastMessage(Message message) {
+        LOG.trace("Рассылка всем клиентам");
         for (ClientHandler client : clients) {
             client.sendMessage(message);
         }
@@ -75,6 +72,7 @@ public class MyServer {
                 return true;
             }
         }
+        LOG.warn(nick + " занят");
         return false;
     }
 
@@ -85,11 +83,13 @@ public class MyServer {
     public synchronized void subscribe(ClientHandler clientHandler) {
         clients.add(clientHandler);
         broadcastClientList();
+        LOG.trace("клиент авторизовался");
     }
 
     public synchronized void unsubscribe(ClientHandler clientHandler) {
         clients.remove(clientHandler);
         broadcastClientList();
+        LOG.trace("клиент вышел");
     }
 
     private synchronized void broadcastClientList() {
@@ -100,6 +100,7 @@ public class MyServer {
         Message message = new Message();
         message.setMessage(sb.toString());
         broadcastMessage(message);
+        LOG.trace("рассылка списка всех подключенных клиентов");
     }
 
     private void closeMyServer() {
@@ -107,5 +108,6 @@ public class MyServer {
             authService.stop();
         }
         executorService.shutdown();
+        LOG.info("завершение работы сервера");
     }
 }

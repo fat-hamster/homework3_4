@@ -1,8 +1,12 @@
 package Server;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class BaseAuthService implements AuthService {
 
     private final DBAccess dbAccess;
+    private static final Logger LOG = LogManager.getLogger(BaseAuthService.class);
 
     public BaseAuthService() {
         dbAccess = new DBAccess();
@@ -11,13 +15,13 @@ public class BaseAuthService implements AuthService {
     @Override
     public void start() {
         dbAccess.connect();
-        System.out.println("Сервис авторизации запущен");
+        LOG.info("Сервис авторизации запущен");
     }
 
     @Override
     public void stop() {
         dbAccess.closeConnection();
-        System.out.println("Сервис авторизации остановлен");
+        LOG.info("Сервис авторизации остановлен");
     }
 
     @Override

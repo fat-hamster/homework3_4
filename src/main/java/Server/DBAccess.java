@@ -9,6 +9,9 @@
 
 package Server;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.sql.*;
 
 public class DBAccess {
@@ -21,6 +24,7 @@ public class DBAccess {
     private final String changeNick = "UPDATE users SET NICK=? WHERE NICK=?";
     private Connection connection = null;
     private String error = "";
+    private static final Logger LOG = LogManager.getLogger(DBAccess.class);
 
     public String getError() {
         return error;
@@ -30,7 +34,7 @@ public class DBAccess {
         try {
             connection = DriverManager.getConnection(url); // for SQLite
             //connection = DriverManager.getConnection(url, login, password); // for MySQL
-            System.out.println("Connection to SQLite has been established.");
+            LOG.info("Connection to SQLite has been established.");
             //System.out.println("Connection to MySql has been established.");
         }catch (SQLException e) {
             e.printStackTrace();
@@ -80,7 +84,7 @@ public class DBAccess {
     public void closeConnection() {
         try {
             if(connection != null) {
-                System.out.println("Connection to SQLite close.");
+                LOG.info("Connection to SQLite close.");
                 connection.close();
             }
         } catch (SQLException e) {
