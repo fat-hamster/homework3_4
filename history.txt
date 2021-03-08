@@ -1,0 +1,30 @@
+Пн 15.02.2021 и время 11:45:21 PM MSK
+Пн 15.02.2021 и время 11:50:45 PM MSK
+Пн 15.02.2021 и время 11:54:53 PM MSK
+Вт 16.02.2021 и время 12:11:24 AM MSK
+Server: /clients vano 
+vano: hello all
+Вт 16.02.2021 и время 12:16:36 AM MSK
+Server: /clients vano 
+vano: hello
+vano: how are you?
+Вт 16.02.2021 и время 01:09:57 AM MSK
+Вт 16.02.2021 и время 01:11:27 AM MSK
+Server: /clients vano 
+vano: привет. провряем connection timeout после авторизации
+Вт 16.02.2021 и время 01:19:09 AM MSK
+Server: /clients vano 
+Вт 16.02.2021 и время 01:21:52 AM MSK
+Вт 16.02.2021 и время 01:22:29 AM MSK
+Server: /clients vano 
+Вт 16.02.2021 и время 01:25:38 AM MSK
+Server: /clients vano 
+Вт 16.02.2021 и время 01:28:47 AM MSK
+Server: /clients vano 
+Вт 16.02.2021 и время 01:29:20 AM MSK
+Вт 16.02.2021 и время 01:35:06 AM MSK
+Вт 16.02.2021 и время 01:35:31 AM MSK
+Вт 16.02.2021 и время 01:37:39 AM MSK
+Вт 16.02.2021 и время 01:38:10 AM MSK
+Вт 16.02.2021 и время 01:38:57 AM MSK
+Сб 06.03.2021 и время 03:58:06 PM MSK
